@@ -1,9 +1,10 @@
 import { AutoComplete } from '@/components/AutoComplete'
 import { useEffect, useState } from 'react'
 import desc from '@/static/desc.json'
+import { FormModule } from '@/components/FormModule'
 
 export default function Home() {
-  const [jokeData, setJokeData] = useState<string[]>([])
+  const [jokeData, setJokeData] = useState<object[]>([])
   const [nationData, setNationData] = useState<object[]>([])
 
   const getData = async (url: string) => {
@@ -18,12 +19,12 @@ export default function Home() {
   useEffect(() => {
     getData('https://icanhazdadjoke.com/search?term&page=2')
       .then(res => (initJokeData(res.results)))
-      initNationData(desc);
+      initNationData();
   },[])
 
   // Data Massage Function
-  const initJokeData = (data) => {
-    const jokeArr = data.map(item => {
+  const initJokeData = (data: object[]) => {
+    const jokeArr = data.map((item: any) => {
       return {
         id: item.id,
         parent: item.joke
@@ -50,16 +51,20 @@ export default function Home() {
 
   return (
     <main>
-      <div className=''>
+      <div className='mt-10 flex-col flex gap-10'>
         <AutoComplete
+          nested={false}
           dataList={jokeData}
           inputId={'joke'}
+          label={'Select Joke:'}
         />
         <AutoComplete
           nested={true}
           dataList={nationData}
           inputId={'currency'}
+          label={'Select Country:'}
         />
+        <FormModule />
       </div>
     </main>
   )
